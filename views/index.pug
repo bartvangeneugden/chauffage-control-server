@@ -1,0 +1,27 @@
+extends layout
+
+block content
+	h1 Chauffage Control
+	.chauffage-control
+	each relay in config
+		.panel.panel-default
+			.panel-body
+				.row
+					.col-md-4.col-xs-12
+						h4=relay.title + " - "
+							if relay.status=="timer"
+								span.label.label-success On
+								span=" for " + Math.floor((relay.timerEnds - Date.now()) / 60000) + " minutes"
+							else if relay.status=="on"
+								span.label.label-success On
+							else if relay.status=="off"
+								span.label.label-danger Off
+					.col-md-8.col-xs-12
+						form(method="POST").form-inline
+							if relay.status=="off"
+								button.btn.btn-success(type="submit" name="change" value="on-"+relay.id) Switch on
+								span  or 
+								button.btn.btn-primary(type="submit" name="change" value="timer-"+relay.id) Switch on timer
+								input(type="time" name="timer-"+relay.id value="01:00").form-control
+							else if relay.status=="on" || relay.status=="timer"
+								button.btn.btn-danger(type="submit" name="change" value="off-"+relay.id) Switch off

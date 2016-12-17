@@ -1,0 +1,10 @@
+{
+  "name": "chauffage-server",
+  "description": "Webserver which will store and export data to control a raspberry pi's relay port",
+  "author": "Bart Vangeneugden <bart@bartv.be>",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "4.13.4",
+    "pug": "2.0.0-beta3"
+  }
+}
