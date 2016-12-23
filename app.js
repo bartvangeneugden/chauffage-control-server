@@ -7,7 +7,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.set('view engine', 'pug');
 app.use(express.static('public'));
 
-app.listen(3000);
+app.listen(3050);
 
 app.get('/', function(req,res) {
 	turnOffExpiredTimers();
