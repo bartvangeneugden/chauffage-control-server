@@ -17,11 +17,27 @@ app.get('/', function(req,res) {
 app.post('/', function(req, res) {
 	var action = req.body.change.split('-')[0];
 	var id = req.body.change.split('-')[1];
-	if(action == "off" || action == "on") {
+	if(action == "off") {
 		config[id - 1].status = action
-	} else if(action == "timer") {
-		config[id - 1].timerEnds = getTimerToEnd(req.body['timer-'+id]);
+	} else if(action == "on" && config[id - 1].function == "switch") {
 		config[id - 1].status = action
+	} else if (action == "on" && config[id - 1].function == "timer") {
+		config[id - 1].status = action
+		config[id - 1].timerEnds = getTimerToEnd(config[id - 1].timer);
+	}
+	writeToFile();
+	res.redirect('/');
+});
+
+app.get('/config', function(req, res) {
+	res.render('config', {config: config});
+});
+
+app.post('/config', function(req, res) {
+	for(var index=1; index < 5; index++) {
+		config[index-1].title = req.body['title-'+index];
+		config[index-1].function = req.body['function-'+index];
+		config[index-1].timer = req.body['time-'+index];
 	}
 	writeToFile();
 	res.redirect('/');
@@ -34,18 +50,14 @@ app.get('/api', function(req,res) {
 	}))
 });
 
-function getTimerToEnd(timeString) {
-	var minuteParts = timeString.split(':');
-	var minutes = (parseInt(minuteParts[0]) * 60) + parseInt(minuteParts[1])
-	var timerToEnd = new Date();
-	timerToEnd.setMinutes(timerToEnd.getMinutes() + minutes);
-	return timerToEnd.getTime();
+function getTimerToEnd(minutes) {
+	return Date.now() + (minutes * 60000)
 }
 
 function turnOffExpiredTimers() {
 	var dirty = false;
 	for(relay of config) {
-		if(relay.status == "timer" && Date.now() > relay.timerEnds) {
+		if(relay.status == "on" && relay.function == "timer" && Date.now() > relay.timerEnds) {
 			relay.status = "off";
 			dirty = true;
 		}

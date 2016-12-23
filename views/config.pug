@@ -1,0 +1,30 @@
+extends layout
+
+block content
+	h1 Chauffage Control
+	.chauffage-control
+	form(method="POST")
+		each relay in config
+			.panel.panel-default
+				.panel-body
+					.row
+						.col-md-4.col-xs-12
+							.form-group
+								label(for=`title-#{relay.id}`) Name
+								input(type="text" name="title-"+relay.id id="title-"+relay.id value=relay.title).form-control
+						.col-md-4.col-xs-12
+							label Function
+							p
+								label.radio-inline
+									input(type="radio" name="function-"+relay.id id="function-"+relay.id value="timer" checked=(relay.function=="timer" ? "checked" : undefined))
+									|  Timer
+								label.radio-inline
+									input(type="radio" name="function-"+relay.id id="function-"+relay.id value="switch" checked=(relay.function=="switch" ? "checked" : undefined))
+									|  On/Off
+						.col-md-4.col-xs-12
+							.form-group
+								label(for=`time-#{relay.id}`) Timer time
+								input(type="number" name="time-"+relay.id id="time-"+relay.id value=relay.timer).form-control
+		button(type="submit").btn.btn-primary Save
+		|  - 
+		a(href="/").btn.btn-danger Cancel
